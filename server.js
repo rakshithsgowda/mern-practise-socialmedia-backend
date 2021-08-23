@@ -1,6 +1,7 @@
 import express from 'express'
 import mongoose from 'mongoose'
 import cors from 'cors'
+import { readdirSync } from 'fs'
 
 // morgan doesnt support esm
 const morgan = require('morgan')
@@ -32,9 +33,8 @@ app.use(
   })
 )
 
-app.post('/api/register', (req, res) => {
-  console.log('REGISTER ENDPOINT => ', req.body)
-})
+// auto load routes
+readdirSync('./routes').map((r) => app.use('/api', require(`./routes/${r}`)))
 
 const port = process.env.PORT || 8000
 
