@@ -1,5 +1,6 @@
 import User from '../models/user'
 import { hashPassword, comparePassword } from '../helpers/auth'
+import jwt from 'jsonwebtoken'
 
 export const register = async (req, res) => {
   // console.log('REGISTER ENDPOINT => ', req.body)
@@ -26,12 +27,43 @@ export const register = async (req, res) => {
   const user = new User({ name, email, password: hashedPassword, secret })
   try {
     await user.save()
-    console.log(`REGISTERED USER => ${user}`)
+    // console.log(`REGISTERED USER => ${user}`)
     return res.json({
       ok: true,
     })
   } catch (err) {
-    console.log('REGISTERATION FAILED => ', err)
+    // console.log('REGISTERATION FAILED => ', err)
     return res.status(400).send('Error. Try Again.')
+  }
+}
+
+export const login = async (req, res) => {
+  // console.log(req.body)
+  try {
+    const { email, password } = req.body
+    // check if our db has user with that email
+    const user = await User.findOne({ email })
+    if (!user) {
+      return res.status(400).send(`NO user found`)
+    }
+    // check password if user is found
+    const match = await comparePassword(password, user.password)
+    if (!match) {
+      return res.status(400).send(`wrong password`)
+    }
+    // create signed token if everything matches
+    const token = await jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
+      expiresIn: '7d',
+    })
+    // setting passwords and secret undefined
+    user.password = undefined
+    user.secret = undefined
+    res.json({
+      token,
+      user,
+    })
+  } catch (err) {
+    console.log(err)
+    return res.status(400).send(`Error. try again.`)
   }
 }
