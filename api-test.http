@@ -1,0 +1,16 @@
+@localurl = http://localhost:8000/api
+
+
+post {{localurl}}/login
+Content-Type: application/json
+
+{
+    "email":"rakshit.s.gowda@gmail.com",
+    "password":"indiana123"
+}
+
+
+### Currentuser
+get {{localurl}}/current-user 
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MTI2MDBmOGUyYmFmMjFmYTQzZDc1YjgiLCJpYXQiOjE2Mjk5NTAzNjUsImV4cCI6MTYzMDU1NTE2NX0.O1Rjo83qad1N_ItM-SrGQrFwXW0suwS22z4xA61425E
