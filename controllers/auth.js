@@ -7,19 +7,25 @@ export const register = async (req, res) => {
   const { name, email, password, secret } = req.body
   // validation
   if (!name) {
-    return res.status(400).send('Name is required')
+    return res.json({
+      error: 'Name is required',
+    })
   }
   if (!password || password.length < 6) {
-    return res
-      .status(400)
-      .send('Password is required and should be 6 characters long')
+    return res.json({
+      error: 'Password is required and should be 6 characters long',
+    })
   }
   if (!secret) {
-    return res.status(400).send('secret is required')
+    return res.json({
+      error: 'answer for secret is required',
+    })
   }
   const exist = await User.findOne({ email })
   if (exist) {
-    return res.status(400).send('Email is taken')
+    return res.json({
+      error: 'Email is taken',
+    })
   }
   // hash password
   const hashedPassword = await hashPassword(password)
@@ -44,12 +50,16 @@ export const login = async (req, res) => {
     // check if our db has user with that email
     const user = await User.findOne({ email })
     if (!user) {
-      return res.status(400).send(`NO user found`)
+      return res.json({
+        error: 'no user found',
+      })
     }
     // check password if user is found
     const match = await comparePassword(password, user.password)
     if (!match) {
-      return res.status(400).send(`wrong password`)
+      return res.json({
+        error: 'wrong password',
+      })
     }
     // create signed token if everything matches
     const token = await jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
@@ -76,5 +86,39 @@ export const currentUser = async (req, res) => {
   } catch (err) {
     console.log(err)
     res.sendStatus(400)
+  }
+}
+
+export const forgotPassword = async (req, res) => {
+  // console.log(req.body)
+  const { email, newPassword, secret } = req.body
+  // validation
+  if (!newPassword || newPassword.length < 6) {
+    return res.json({
+      error: 'new password is required and should be min of 6 characters long',
+    })
+  }
+  if (!secret) {
+    return res.json({
+      error: 'secret is required',
+    })
+  }
+  const user = await User.findOne({ email, secret })
+  if (!user) {
+    return res.json({
+      error: "Sorry! Can't verify user with the given details",
+    })
+  }
+  try {
+    const hashed = await hashPassword(newPassword)
+    await user.findByIdAndUpdate(user._id, { password: hashed })
+    return res.json({
+      success: 'Congrats, Now you can login with your new password',
+    })
+  } catch (error) {
+    console.log(error)
+    return res.json({
+      error: 'Something wrong, Try again',
+    })
   }
 }
