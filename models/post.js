@@ -16,7 +16,7 @@ const postSchema = new mongoose.Schema(
       url: String,
       public_id: String,
     },
-    likes: [{ type: objectId, ref: 'user' }],
+    likes: [{ type: ObjectId, ref: 'user' }],
     comments: [
       {
         text: String,
@@ -31,4 +31,4 @@ const postSchema = new mongoose.Schema(
   { timestamps: true }
 )
 
-export default mongoose.model('POST', postSchema)
+export default mongoose.model('Post', postSchema)
