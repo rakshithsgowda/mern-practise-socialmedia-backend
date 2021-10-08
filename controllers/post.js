@@ -7,6 +7,9 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_SECRET,
 })
 
+// ---------------------------------------------------------------------------------------------------
+// create a post for the user
+// ---------------------------------------------------------------------------------------------------
 export const createPost = async (req, res) => {
   // console.log('post => ', req.body)
   const { content, image } = req.body
@@ -26,6 +29,9 @@ export const createPost = async (req, res) => {
   }
 }
 
+// ---------------------------------------------------------------------------------------------------
+// upload image for the post
+// ---------------------------------------------------------------------------------------------------
 export const uploadImage = async (req, res) => {
   // console.log('req files => ', req.files)
   try {
@@ -39,3 +45,21 @@ export const uploadImage = async (req, res) => {
     console.log(error)
   }
 }
+
+// ---------------------------------------------------------------------------------------------------
+// posts By User
+// ---------------------------------------------------------------------------------------------------
+export const postsByUser = async (req, res) => {
+  try {
+    const posts = await Post.find({ postsBy: req.user._id })
+      .populate('postedBy', '_id name image')
+      .sort({ createdAt: -1 })
+      .limit(10)
+    console.log(`posts => ${posts}`)
+    res.json(posts)
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+// ---------------------------------------------------------------------------------------------------
