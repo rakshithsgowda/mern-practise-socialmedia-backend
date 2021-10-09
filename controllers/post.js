@@ -76,3 +76,18 @@ export const userPost = async (req, res) => {
 }
 
 // ---------------------------------------------------------------------------------------------------
+// update user Post
+// ---------------------------------------------------------------------------------------------------
+export const updatePost = async (req, res) => {
+  // console.log('post update controller =>', req.body)
+  try {
+    const post = await Post.findByIdAndUpdate(req.params._id, req.body, {
+      new: true,
+    })
+    res.json(post)
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+// ---------------------------------------------------------------------------------------------------
