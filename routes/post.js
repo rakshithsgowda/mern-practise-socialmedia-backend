@@ -2,7 +2,12 @@ import express from 'express'
 import formidable from 'express-formidable'
 
 import { requireSignIn } from '../middlewares/auth'
-import { createPost, uploadImage, postsByUser } from '../controllers/post'
+import {
+  createPost,
+  uploadImage,
+  postsByUser,
+  userPost,
+} from '../controllers/post'
 
 const router = express.Router()
 
@@ -16,5 +21,6 @@ router.post(
 
 // posts - since the user is already logged in
 router.get('/user-posts', requireSignIn, postsByUser)
+router.get('/user-post/:_id', requireSignIn, userPost)
 
 module.exports = router

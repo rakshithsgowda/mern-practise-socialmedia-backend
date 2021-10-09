@@ -47,7 +47,7 @@ export const uploadImage = async (req, res) => {
 }
 
 // ---------------------------------------------------------------------------------------------------
-// posts By User
+// all posts to  User
 // ---------------------------------------------------------------------------------------------------
 export const postsByUser = async (req, res) => {
   try {
@@ -58,6 +58,18 @@ export const postsByUser = async (req, res) => {
       .limit(10)
     // console.log(`posts => ${posts}`)
     res.json(posts)
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+// ---------------------------------------------------------------------------------------------------
+// single post edit
+// ---------------------------------------------------------------------------------------------------
+export const userPost = async (req, res) => {
+  try {
+    const post = await Post.findById(req.params._id)
+    res.json(post)
   } catch (error) {
     console.log(error)
   }
