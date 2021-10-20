@@ -7,7 +7,7 @@ import {
   uploadImage,
   postsByUser,
   userPost,
-  updatePost,
+  updatePost,deletePost
 } from '../controllers/post'
 
 const router = express.Router()
@@ -24,5 +24,6 @@ router.post(
 router.get('/user-posts', requireSignIn, postsByUser)
 router.get('/user-post/:_id', requireSignIn, userPost)
 router.put('/update-post/:_id', requireSignIn, canEditDeletePost, updatePost)
+router.delete('/delete-post/:_id', requireSignIn,canEditDeletePost,deletePost)
 
 module.exports = router
