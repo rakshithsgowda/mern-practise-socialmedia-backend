@@ -91,22 +91,19 @@ export const updatePost = async (req, res) => {
 }
 
 // ---------------------------------------------------------------------------------------------------
-// Delete post 
+// Delete post
 // ---------------------------------------------------------------------------------------------------
-export const deletePost =async (req, res) => {
+export const deletePost = async (req, res) => {
   try {
-    const post = await Post.findByIdAndDelete(req.params._id);
+    const post = await Post.findByIdAndDelete(req.params._id)
     // remove the Image from cloudinary
     if (post.image && post.image.public_id) {
-      const image = await cloudinary.uploader.destroy(post.image.public_id )
+      const image = await cloudinary.uploader.destroy(post.image.public_id)
     }
-    res.json({ok: true,})
-
+    res.json({ ok: true })
   } catch (error) {
     console.log(error)
   }
 }
-
-
 
 // ---------------------------------------------------------------------------------------------------
