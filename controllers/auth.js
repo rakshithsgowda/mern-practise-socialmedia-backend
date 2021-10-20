@@ -1,6 +1,10 @@
 import User from '../models/user'
 import { hashPassword, comparePassword } from '../helpers/auth'
 import jwt from 'jsonwebtoken'
+import { nanoid } from 'nanoid'
+
+// ---------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------
 
 export const register = async (req, res) => {
   // console.log('REGISTER ENDPOINT => ', req.body)
@@ -30,7 +34,13 @@ export const register = async (req, res) => {
   // hash password
   const hashedPassword = await hashPassword(password)
 
-  const user = new User({ name, email, password: hashedPassword, secret })
+  const user = new User({
+    name,
+    email,
+    password: hashedPassword,
+    secret,
+    username: nanoid(6),
+  })
   try {
     await user.save()
     // console.log(`REGISTERED USER => ${user}`)
@@ -42,6 +52,8 @@ export const register = async (req, res) => {
     return res.status(400).send('Error. Try Again.')
   }
 }
+// ---------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------
 
 export const login = async (req, res) => {
   // console.log(req.body)
@@ -78,6 +90,8 @@ export const login = async (req, res) => {
   }
 }
 
+// ---------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------
 export const currentUser = async (req, res) => {
   try {
     const user = await User.findById(req.user._id)
@@ -88,6 +102,8 @@ export const currentUser = async (req, res) => {
     res.sendStatus(400)
   }
 }
+// ---------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------
 
 export const forgotPassword = async (req, res) => {
   // console.log(req.body)
@@ -122,3 +138,5 @@ export const forgotPassword = async (req, res) => {
     })
   }
 }
+
+// ---------------------------------------------------------------------------------------------
