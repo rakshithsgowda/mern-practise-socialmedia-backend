@@ -140,3 +140,45 @@ export const forgotPassword = async (req, res) => {
 }
 
 // ---------------------------------------------------------------------------------------------
+// PRofile update
+// ---------------------------------------------------------------------------------------------
+export const profileUpdate = async (req, res) => {
+  try {
+    // console.log('profile update req.body', req?.body)
+    const data = {}
+    if (req.body.username) {
+      data.username = req.body.username
+    }
+    if (req.body.about) {
+      data.about = req.body.about
+    }
+    if (req.body.name) {
+      data.name = req.body.name
+    }
+    if (req.body.password) {
+      if (req.body.password < 6) {
+        return res.json({
+          error: 'Password required and should be min 6 characters long',
+        })
+      } else {
+        data.password = await hashPassword(req.body.password)
+      }
+    }
+    if (req.body.secret) {
+      data.secret = req.body.secret
+    }
+
+    let user = await User.findByIdAndUpdate(req.user._id, data, { new: true })
+    // console.log('updated user info =>',user)
+    user.password = undefined
+    user.secret = undefined
+    res.json(user)
+  } catch (error) {
+    if (error.code === 11000) {
+      return res.json({ error: 'Duplicate username' })
+    }
+    console.log(error)
+  }
+}
+
+// ---------------------------------------------------------------------------------------------

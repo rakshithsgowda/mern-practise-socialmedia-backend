@@ -4,6 +4,7 @@ import {
   forgotPassword,
   login,
   register,
+  profileUpdate,
 } from '../controllers/auth'
 import { requireSignIn } from '../middlewares/auth'
 
@@ -13,5 +14,6 @@ router.post('/register', register)
 router.post('/login', login)
 router.get('/current-user', requireSignIn, currentUser)
 router.post('/forgot-password', forgotPassword)
+router.put('/profile-update', requireSignIn, profileUpdate)
 
 module.exports = router
